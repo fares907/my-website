@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام مواد البناء</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+:root{
+  --cement:#c8a96e;--cement-light:#e8c98e;
+  --bg:#0f1726;--card:#192038;--card2:#1e2a45;
+  --text:#e8eaf2;--muted:#8892b0;
+  --green:#22c55e;--red:#ef4444;--blue:#60a5fa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+ 
+.logo{font-size:3rem;margin-bottom:12px;}
+h1{font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--cement-light),var(--cement));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:6px;}
+.sub{color:var(--muted);font-size:.92rem;text-align:center;margin-bottom:48px;}
+ 
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;max-width:640px;}
+@media(max-width:500px){.cards{grid-template-columns:1fr;}}
+ 
+.nav-card{background:var(--card);border:1px solid #2a3a5c;border-radius:18px;padding:32px 24px;text-align:center;cursor:pointer;text-decoration:none;color:var(--text);transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.nav-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.nav-card.calc::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+.nav-card.store::before{background:linear-gradient(90deg,#a8873e,var(--cement-light));}
+.nav-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px #0008;}
+.nav-card.calc:hover{border-color:#3b82f6;}
+.nav-card.store:hover{border-color:var(--cement);}
+ 
+.nc-icon{font-size:2.8rem;}
+.nc-title{font-size:1.2rem;font-weight:900;}
+.nc-desc{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.nc-btn{margin-top:6px;padding:9px 22px;border:none;border-radius:8px;font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;}
+.calc .nc-btn{background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;}
+.store .nc-btn{background:linear-gradient(135deg,var(--cement),#a8873e);color:#1a0f00;}
+ 
+.footer{margin-top:40px;color:var(--muted);font-size:.75rem;text-align:center;}
+</style>
+</head>
+<body>
+ 
+<div class="logo">🏗️</div>
+<h1>نظام مواد البناء</h1>
+<p class="sub">حاسبة الأسعار — مخزن الحديد والأسمنت</p>
+ 
+<div class="cards">
+  <a href="calculator.html" class="nav-card calc">
+    <div class="nc-icon">🧮</div>
+    <div class="nc-title">الحاسبة</div>
+    <div class="nc-desc">احسب تكلفة الحديد والأسمنت بسعر السوق — بالطن والكيلو والشكارة</div>
+    <button class="nc-btn">افتح الحاسبة ←</button>
+  </a>
+  <a href="warehouse.html" class="nav-card store">
+    <div class="nc-icon">📦</div>
+    <div class="nc-title">المخزن</div>
+    <div class="nc-desc">صرف واستلام بضاعة — تتبع الرصيد وسجل كل الحركات</div>
+    <button class="nc-btn">افتح المخزن ←</button>
+  </a>
+</div>
+ 
+<div class="footer">حديد · أسمنت · مواد بناء</div>
+</body>
+</html>

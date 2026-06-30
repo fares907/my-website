@@ -1,0 +1,336 @@
+cat > /mnt/user-data/outputs/warehouse.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مخزن مواد البناء</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+:root{
+  --cement:#c8a96e;--cement-light:#e8c98e;
+  --bg:#0f1726;--card:#192038;--card2:#1e2a45;
+  --text:#e8eaf2;--muted:#8892b0;
+  --green:#22c55e;--red:#ef4444;--orange:#f97316;--blue:#60a5fa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:14px;}
+.container{max-width:860px;margin:0 auto;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;text-decoration:none;padding:7px 12px;border:1px solid #2a3a5c;border-radius:8px;margin-bottom:16px;transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--text);border-color:var(--cement);}
+header{text-align:center;padding:10px 0 16px;}
+header h1{font-size:1.75rem;font-weight:900;background:linear-gradient(135deg,var(--cement-light),var(--cement));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px;}
+header p{color:var(--muted);font-size:.85rem;}
+.price-bar{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+.bar-title{font-size:.74rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.price-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:540px){.price-cols{grid-template-columns:1fr;}}
+.price-block{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.pb-title{font-size:.78rem;font-weight:700;color:var(--cement-light);margin-bottom:2px;}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;}
+.ig{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.ig label{font-size:.68rem;color:var(--muted);font-weight:600;}
+.iw{display:flex;align-items:center;background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;overflow:hidden;width:100%;}
+.iw:focus-within{border-color:var(--cement);}
+.iw input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;padding:7px 6px;text-align:right;min-width:0;width:0;}
+.iw .u{padding:7px 6px;font-size:.62rem;color:var(--muted);background:#151e33;border-left:1px solid #2a3a5c;white-space:nowrap;flex-shrink:0;}
+.sync-note{font-size:.68rem;color:#4a5a80;text-align:center;margin-top:1px;}
+.dash{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:540px){.dash{grid-template-columns:1fr;}}
+.dash-card{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px;position:relative;overflow:hidden;}
+.dash-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;}
+.dc-steel::before{background:#4f7bc4;}
+.dc-cement::before{background:var(--cement);}
+.dc-icon{font-size:1.3rem;margin-bottom:6px;}
+.dc-name{font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:8px;}
+.dc-main{font-size:1.9rem;font-weight:900;line-height:1;}
+.dc-sub{font-size:.74rem;color:var(--muted);margin-top:4px;}
+.dc-val{font-size:.8rem;margin-top:6px;}
+.dc-val strong{color:var(--cement-light);}
+.prog-bg{background:#151e33;border-radius:99px;height:7px;overflow:hidden;margin-top:8px;}
+.prog-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+.fill-s{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+.fill-c{background:linear-gradient(90deg,#a8873e,var(--cement-light));}
+.action-panel{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+.ap-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;}
+.tab-btn{padding:9px;border:1px solid #2a3a5c;border-radius:8px;background:var(--card2);color:var(--muted);font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.tab-btn.active-out{background:linear-gradient(135deg,#3a1a1a,#4a2020);border-color:#7a3030;color:var(--red);}
+.tab-btn.active-in{background:linear-gradient(135deg,#1a3a1a,#204a20);border-color:#307a30;color:var(--green);}
+.ap-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;}
+@media(max-width:500px){.ap-form{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.form-group label{font-size:.72rem;color:var(--muted);font-weight:600;}
+.form-group select{background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:700;padding:8px 10px;outline:none;width:100%;}
+.form-group select:focus{border-color:var(--cement);}
+.note-inp{background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;padding:8px 10px;outline:none;width:100%;}
+.note-inp:focus{border-color:var(--cement);}
+.qty-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.action-btn{padding:10px 16px;border:none;border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;transition:all .18s;white-space:nowrap;width:100%;}
+.btn-out{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;}
+.btn-in{background:linear-gradient(135deg,#1a8a3a,#27ae60);color:#fff;}
+.action-btn:hover{transform:translateY(-1px);opacity:.9;}
+.log-wrap{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+.log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.log-title{font-size:.74rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;}
+.clear-btn{font-size:.72rem;color:var(--red);background:transparent;border:1px solid #5a2a2a;border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.clear-btn:hover{background:#2a1a1a;}
+.log-empty{text-align:center;color:var(--muted);font-size:.82rem;padding:20px 0;}
+.log-table{width:100%;border-collapse:collapse;}
+.log-table th{font-size:.66rem;color:var(--muted);font-weight:700;text-align:right;padding:6px 8px;border-bottom:1px solid #2a3a5c;}
+.log-table td{font-size:.76rem;padding:8px 8px;border-bottom:1px solid #1e2a3e;vertical-align:middle;}
+.log-table tr:last-child td{border-bottom:none;}
+.log-table tr:hover td{background:#1e2a40;}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.66rem;font-weight:700;}
+.badge-out{background:#3a1010;color:var(--red);}
+.badge-in{background:#0e2e1a;color:var(--green);}
+.badge-steel{background:#0e1e3a;color:var(--blue);}
+.badge-cement{background:#2a1e08;color:var(--cement-light);}
+.undo-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;padding:2px 6px;border-radius:4px;}
+.undo-btn:hover{color:var(--red);background:#2a1a1a;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#1e3a2a;border:1px solid #2d6a3d;border-radius:10px;padding:10px 20px;font-size:.85rem;color:#86efac;font-weight:700;transition:transform .3s ease,opacity .3s;opacity:0;z-index:999;}
+.toast.err{background:#3a1a1a;border-color:#6a2d2d;color:#fca5a5;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.color-blue{color:#60a5fa;}.color-cement{color:var(--cement-light);}
+.save-badge{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;color:#4ade80;background:#0e2e1a;border:1px solid #2d6a3d;border-radius:6px;padding:3px 8px;margin-right:8px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-btn">← الرئيسية</a>
+  <header>
+    <h1>📦 مخزن مواد البناء</h1>
+    <p>صرف — استلام — سجل حركات كامل · <span class="save-badge">💾 محفوظ تلقائي</span></p>
+  </header>
+
+  <div class="price-bar">
+    <div class="bar-title">⚡ أسعار السوق</div>
+    <div class="price-cols">
+      <div class="price-block">
+        <div class="pb-title">🔩 الحديد</div>
+        <div class="twin">
+          <div class="ig"><label>سعر الطن</label>
+            <div class="iw"><input type="number" id="steelPriceTon" value="38700" min="0" oninput="syncSteel('ton')"><span class="u">ج/طن</span></div>
+          </div>
+          <div class="ig"><label>سعر الكيلو</label>
+            <div class="iw"><input type="number" id="steelPriceKg" value="38.7" min="0" step="0.01" oninput="syncSteel('kg')"><span class="u">ج/كجم</span></div>
+          </div>
+        </div>
+        <div class="sync-note">↔ الطن = ١٠٠٠ كيلو</div>
+      </div>
+      <div class="price-block">
+        <div class="pb-title">🏛️ الأسمنت</div>
+        <div class="twin">
+          <div class="ig"><label>سعر الشكارة</label>
+            <div class="iw"><input type="number" id="cementPriceBag" value="220" min="0" oninput="syncCement('bag')"><span class="u">ج/شكارة</span></div>
+          </div>
+          <div class="ig"><label>سعر الطن</label>
+            <div class="iw"><input type="number" id="cementPriceTon" value="4400" min="0" oninput="syncCement('ton')"><span class="u">ج/طن</span></div>
+          </div>
+        </div>
+        <div class="sync-note">↔ الطن = ٢٠ شكارة</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash">
+    <div class="dash-card dc-steel">
+      <div class="dc-icon">🔩</div>
+      <div class="dc-name">حديد متبقي</div>
+      <div class="dc-main color-blue" id="dSteelTon">0 طن</div>
+      <div class="dc-sub" id="dSteelKg">0 كيلوجرام</div>
+      <div class="dc-val" id="dSteelVal">≈ <strong>0</strong> جنيه</div>
+      <div class="prog-bg"><div class="prog-fill fill-s" id="dSteelBar" style="width:0%"></div></div>
+    </div>
+    <div class="dash-card dc-cement">
+      <div class="dc-icon">🏛️</div>
+      <div class="dc-name">أسمنت متبقي</div>
+      <div class="dc-main color-cement" id="dCementTon">0 طن</div>
+      <div class="dc-sub" id="dCementBags">0 شكارة</div>
+      <div class="dc-val" id="dCementVal">≈ <strong>0</strong> جنيه</div>
+      <div class="prog-bg"><div class="prog-fill fill-c" id="dCementBar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="action-panel">
+    <div class="ap-tabs">
+      <button class="tab-btn active-out" id="tabOut" onclick="setTab('out')">📤 صرف من المخزن</button>
+      <button class="tab-btn" id="tabIn" onclick="setTab('in')">📥 استلام بضاعة</button>
+    </div>
+    <div class="ap-form">
+      <div class="form-group">
+        <label>المادة</label>
+        <select id="matSelect" onchange="onMatChange()">
+          <option value="steel">🔩 حديد</option>
+          <option value="cement">🏛️ أسمنت</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الكمية</label>
+        <div class="qty-row">
+          <div class="iw"><input type="number" id="qtyTon" placeholder="0" min="0" step="0.5" oninput="syncQtyTon()"><span class="u">طن</span></div>
+          <div class="iw"><input type="number" id="qtySub" placeholder="0" min="0" step="1" oninput="syncQtySub()"><span class="u" id="subUnit">كجم</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ملاحظة (اختياري)</label>
+        <input type="text" class="note-inp" id="noteInp" placeholder="مثال: الدور الثالث">
+      </div>
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button class="action-btn btn-out" id="actionBtn" onclick="doAction()">📤 صرف</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="log-wrap">
+    <div class="log-header">
+      <div class="log-title">📋 سجل الحركات</div>
+      <button class="clear-btn" onclick="clearLog()">🗑️ مسح الكل</button>
+    </div>
+    <div id="logBody"><div class="log-empty">لا توجد حركات بعد</div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE — محمّل من localStorage =====
+function loadState() {
+  try {
+    const s = localStorage.getItem('binaa_state');
+    return s ? JSON.parse(s) : { steelTon:0, cementTon:0, steelPeak:0, cementPeak:0, log:[], steelPrice:38700, cementBagPrice:220 };
+  } catch(e) { return { steelTon:0, cementTon:0, steelPeak:0, cementPeak:0, log:[], steelPrice:38700, cementBagPrice:220 }; }
+}
+function saveState() {
+  const s = { steelTon, cementTon, steelPeak, cementPeak, log,
+    steelPrice: parseFloat(document.getElementById('steelPriceTon').value)||38700,
+    cementBagPrice: parseFloat(document.getElementById('cementPriceBag').value)||220
+  };
+  localStorage.setItem('binaa_state', JSON.stringify(s));
+}
+
+let { steelTon, cementTon, steelPeak, cementPeak, log, steelPrice, cementBagPrice } = loadState();
+let currentTab = 'out';
+
+function r2(n){return Math.round(n*1000)/1000;}
+function fmt(n){return Math.round(n).toLocaleString('ar-EG');}
+function fmtD(n){return parseFloat(n.toFixed(3)).toLocaleString('ar-EG');}
+function now(){return new Date().toLocaleString('ar-EG',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});}
+
+// ===== PRICES =====
+function syncSteel(f){
+  if(f==='ton'){const t=parseFloat(document.getElementById('steelPriceTon').value)||0;document.getElementById('steelPriceKg').value=r2(t/1000);}
+  else{const k=parseFloat(document.getElementById('steelPriceKg').value)||0;document.getElementById('steelPriceTon').value=r2(k*1000);}
+  saveState(); renderDash();
+}
+function syncCement(f){
+  if(f==='bag'){const b=parseFloat(document.getElementById('cementPriceBag').value)||0;document.getElementById('cementPriceTon').value=r2(b*20);}
+  else{const t=parseFloat(document.getElementById('cementPriceTon').value)||0;document.getElementById('cementPriceBag').value=r2(t/20);}
+  saveState(); renderDash();
+}
+
+// ===== QTY SYNC =====
+function syncQtyTon(){const mat=document.getElementById('matSelect').value;const t=parseFloat(document.getElementById('qtyTon').value)||0;document.getElementById('qtySub').value=mat==='steel'?r2(t*1000):Math.round(t*20);}
+function syncQtySub(){const mat=document.getElementById('matSelect').value;const s=parseFloat(document.getElementById('qtySub').value)||0;document.getElementById('qtyTon').value=mat==='steel'?r2(s/1000):r2(s/20);}
+function onMatChange(){const mat=document.getElementById('matSelect').value;document.getElementById('subUnit').textContent=mat==='steel'?'كجم':'شكارة';document.getElementById('qtySub').value='';document.getElementById('qtyTon').value='';}
+
+// ===== TABS =====
+function setTab(t){
+  currentTab=t;
+  document.getElementById('tabOut').className='tab-btn'+(t==='out'?' active-out':'');
+  document.getElementById('tabIn').className='tab-btn'+(t==='in'?' active-in':'');
+  document.getElementById('actionBtn').className='action-btn '+(t==='out'?'btn-out':'btn-in');
+  document.getElementById('actionBtn').textContent=t==='out'?'📤 صرف':'📥 استلام';
+}
+
+// ===== ACTION =====
+function doAction(){
+  const mat=document.getElementById('matSelect').value;
+  const qtyT=parseFloat(document.getElementById('qtyTon').value)||0;
+  const note=document.getElementById('noteInp').value.trim();
+  if(qtyT<=0){showToast('اكتب كمية أكبر من صفر!','err');return;}
+  const sp=parseFloat(document.getElementById('steelPriceTon').value)||0;
+  const bp=parseFloat(document.getElementById('cementPriceBag').value)||0;
+  const cp=bp*20;
+
+  if(currentTab==='out'){
+    if(mat==='steel'){if(qtyT>steelTon){showToast(`المخزون فيه ${fmtD(steelTon)} طن بس!`,'err');return;}steelTon=r2(steelTon-qtyT);}
+    else{if(qtyT>cementTon){showToast(`المخزون فيه ${fmtD(cementTon)} طن بس!`,'err');return;}cementTon=r2(cementTon-qtyT);}
+    log.unshift({id:Date.now(),type:'out',mat,qtyTon:qtyT,val:qtyT*(mat==='steel'?sp:cp),note,time:now()});
+    showToast(`تم الصرف ✓ — ${fmtD(qtyT)} طن ${mat==='steel'?'حديد':'أسمنت'}`);
+  } else {
+    if(mat==='steel'){steelTon=r2(steelTon+qtyT);if(steelTon>steelPeak)steelPeak=steelTon;}
+    else{cementTon=r2(cementTon+qtyT);if(cementTon>cementPeak)cementPeak=cementTon;}
+    log.unshift({id:Date.now(),type:'in',mat,qtyTon:qtyT,val:qtyT*(mat==='steel'?sp:cp),note,time:now()});
+    showToast(`تم الاستلام ✓ — ${fmtD(qtyT)} طن ${mat==='steel'?'حديد':'أسمنت'}`);
+  }
+  document.getElementById('qtyTon').value='';
+  document.getElementById('qtySub').value='';
+  document.getElementById('noteInp').value='';
+  saveState(); renderDash(); renderLog();
+}
+
+// ===== UNDO =====
+function undoLog(id){
+  const idx=log.findIndex(x=>x.id===id);if(idx<0)return;
+  const e=log[idx];
+  if(e.type==='out'){if(e.mat==='steel')steelTon=r2(steelTon+e.qtyTon);else cementTon=r2(cementTon+e.qtyTon);}
+  else{if(e.mat==='steel'){steelTon=r2(steelTon-e.qtyTon);if(steelTon<0)steelTon=0;}else{cementTon=r2(cementTon-e.qtyTon);if(cementTon<0)cementTon=0;}}
+  log.splice(idx,1);
+  showToast('تم التراجع ✓');
+  saveState(); renderDash(); renderLog();
+}
+
+function clearLog(){
+  if(!log.length)return;
+  if(!confirm('هتمسح سجل الحركات؟ الرصيد هيفضل زي ما هو.'))return;
+  log=[];saveState();renderLog();
+}
+
+// ===== RENDER =====
+function renderLog(){
+  const el=document.getElementById('logBody');
+  if(!log.length){el.innerHTML='<div class="log-empty">لا توجد حركات بعد — ابدأ بصرف أو استلام</div>';return;}
+  const rows=log.map(e=>{
+    const tb=e.type==='out'?'<span class="badge badge-out">📤 صرف</span>':'<span class="badge badge-in">📥 استلام</span>';
+    const mb=e.mat==='steel'?'<span class="badge badge-steel">🔩 حديد</span>':'<span class="badge badge-cement">🏛️ أسمنت</span>';
+    const sub=e.mat==='steel'?`${fmt(e.qtyTon*1000)} كجم`:`${fmt(e.qtyTon*20)} شكارة`;
+    const nc=e.note?`<span style="color:var(--muted);font-size:.7rem">${e.note}</span>`:'—';
+    return `<tr><td>${tb}</td><td>${mb}</td><td style="font-weight:700">${fmtD(e.qtyTon)} طن<br><span style="font-size:.66rem;color:var(--muted)">${sub}</span></td><td style="color:var(--cement-light);font-weight:700">${fmt(e.val)} ج</td><td>${nc}</td><td style="color:var(--muted);font-size:.68rem">${e.time}</td><td><button class="undo-btn" onclick="undoLog(${e.id})" title="تراجع">↩</button></td></tr>`;
+  }).join('');
+  el.innerHTML=`<table class="log-table"><thead><tr><th>النوع</th><th>المادة</th><th>الكمية</th><th>القيمة</th><th>ملاحظة</th><th>الوقت</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderDash(){
+  const sp=parseFloat(document.getElementById('steelPriceTon').value)||0;
+  const bp=parseFloat(document.getElementById('cementPriceBag').value)||0;
+  const cp=bp*20;
+  document.getElementById('dSteelTon').textContent=`${fmtD(steelTon)} طن`;
+  document.getElementById('dSteelKg').textContent=`${fmt(steelTon*1000)} كيلوجرام`;
+  document.getElementById('dSteelVal').innerHTML=`≈ <strong>${fmt(steelTon*sp)}</strong> جنيه`;
+  document.getElementById('dCementTon').textContent=`${fmtD(cementTon)} طن`;
+  document.getElementById('dCementBags').textContent=`${fmt(cementTon*20)} شكارة`;
+  document.getElementById('dCementVal').innerHTML=`≈ <strong>${fmt(cementTon*cp)}</strong> جنيه`;
+  const sp2=steelPeak>0?Math.min(100,(steelTon/steelPeak)*100):0;
+  const cp2=cementPeak>0?Math.min(100,(cementTon/cementPeak)*100):0;
+  document.getElementById('dSteelBar').style.width=sp2+'%';
+  document.getElementById('dCementBar').style.width=cp2+'%';
+}
+
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(type==='err'?' err':'')+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ===== INIT — حمّل الأسعار المحفوظة =====
+document.getElementById('steelPriceTon').value = steelPrice;
+document.getElementById('steelPriceKg').value  = r2(steelPrice/1000);
+document.getElementById('cementPriceBag').value = cementBagPrice;
+document.getElementById('cementPriceTon').value = r2(cementBagPrice*20);
+renderDash();
+renderLog();
+</script>
+</body>
+</html>
+HTMLEOF
+echo "warehouse done"

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة مواد البناء</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+:root{
+  --cement:#c8a96e;--cement-light:#e8c98e;
+  --bg:#0f1726;--card:#192038;--card2:#1e2a45;
+  --text:#e8eaf2;--muted:#8892b0;
+  --green:#22c55e;--red:#ef4444;--orange:#f97316;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:14px;}
+.container{max-width:860px;margin:0 auto;}
+
+/* BACK */
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;font-weight:600;text-decoration:none;padding:7px 12px;border:1px solid #2a3a5c;border-radius:8px;margin-bottom:16px;transition:color .2s,border-color .2s;}
+.back-btn:hover{color:var(--text);border-color:var(--cement);}
+
+header{text-align:center;padding:10px 0 16px;}
+header h1{font-size:1.75rem;font-weight:900;background:linear-gradient(135deg,var(--cement-light),var(--cement));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px;}
+header p{color:var(--muted);font-size:.85rem;}
+
+/* PRICE BAR */
+.price-bar{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+.bar-title{font-size:.74rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.price-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:540px){.price-cols{grid-template-columns:1fr;}}
+.price-block{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.pb-title{font-size:.78rem;font-weight:700;color:var(--cement-light);margin-bottom:2px;}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;}
+.ig{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.ig label{font-size:.68rem;color:var(--muted);font-weight:600;}
+.iw{display:flex;align-items:center;background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;overflow:hidden;width:100%;}
+.iw:focus-within{border-color:var(--cement);}
+.iw input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;padding:7px 6px;text-align:right;min-width:0;width:0;}
+.iw .u{padding:7px 6px;font-size:.62rem;color:var(--muted);background:#151e33;border-left:1px solid #2a3a5c;white-space:nowrap;flex-shrink:0;}
+.sync-note{font-size:.68rem;color:#4a5a80;text-align:center;margin-top:1px;}
+
+/* STOCK */
+.sec-title{font-size:.75rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:540px){.cards-grid{grid-template-columns:1fr;}}
+.mat-card{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px;position:relative;overflow:hidden;min-width:0;}
+.mat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;}
+.card-steel::before{background:#4f7bc4;}
+.card-cement::before{background:var(--cement);}
+.card-icon{font-size:1.3rem;margin-bottom:6px;}
+.card-lbl{font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:8px;}
+.dual-inp{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;width:100%;}
+.val-badge{font-size:.76rem;color:var(--muted);}
+.val-badge strong{color:var(--cement-light);}
+
+/* USAGE */
+.usage-box{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
+.usage-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;}
+@media(max-width:500px){.usage-grid{grid-template-columns:1fr;}}
+.usage-col{display:flex;flex-direction:column;gap:6px;min-width:0;}
+.usage-col .col-title{font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+
+/* BUTTON */
+.calc-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--cement),#a8873e);color:#1a0f00;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:900;border:none;border-radius:11px;cursor:pointer;margin-bottom:20px;transition:transform .15s,opacity .15s;}
+.calc-btn:hover{opacity:.91;transform:translateY(-1px);}
+
+/* RESULTS */
+.results{display:none;flex-direction:column;gap:13px;animation:fadeUp .3s ease;}
+.results.show{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+@media(max-width:500px){.res-grid{grid-template-columns:1fr;}}
+.res-card{background:var(--card);border:1px solid #2a3a5c;border-radius:12px;padding:15px;}
+.r-lbl{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+.r-val{font-size:1.6rem;font-weight:900;line-height:1.1;}
+.r-sub{font-size:.73rem;color:var(--muted);margin-top:3px;}
+.color-blue{color:#60a5fa;}.color-cement{color:var(--cement-light);}
+.color-red{color:var(--red);}.color-orange{color:var(--orange);}
+.progress-wrap{background:var(--card);border:1px solid #2a3a5c;border-radius:12px;padding:15px;}
+.prog-lbl{display:flex;justify-content:space-between;margin-bottom:5px;font-size:.78rem;}
+.prog-lbl span:last-child{font-weight:700;}
+.prog-bg{background:#151e33;border-radius:99px;height:8px;overflow:hidden;margin-bottom:10px;}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.fill-steel{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+.fill-cement{background:linear-gradient(90deg,#a8873e,var(--cement-light));}
+.summary-box{background:linear-gradient(135deg,#1a2a1a,#1f3a1f);border:1px solid #2d5a2d;border-radius:12px;padding:18px;text-align:center;}
+.s-lbl{font-size:.74rem;color:#86efac;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.s-total{font-size:1.9rem;font-weight:900;color:#4ade80;}
+.s-sub{font-size:.76rem;color:#86efac;margin-top:4px;}
+.warn-box{background:linear-gradient(135deg,#2a1a0a,#3a2a0a);border:1px solid #7c4a00;border-radius:10px;padding:12px 15px;font-size:.82rem;color:#fcd34d;text-align:center;display:none;}
+.warn-box.show{display:block;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-btn">← الرئيسية</a>
+  <header>
+    <h1>🧮 حاسبة مواد البناء</h1>
+    <p>احسب تكلفة الحديد والأسمنت بسعر السوق</p>
+  </header>
+
+  <div class="price-bar">
+    <div class="bar-title">⚡ أسعار السوق — غيّر أي رقم والتاني بيتحسب تلقائي</div>
+    <div class="price-cols">
+      <div class="price-block">
+        <div class="pb-title">🔩 الحديد</div>
+        <div class="twin">
+          <div class="ig"><label>سعر الطن</label>
+            <div class="iw"><input type="number" id="steelPriceTon" value="38700" min="0" oninput="syncSteel('ton')"><span class="u">ج/طن</span></div>
+          </div>
+          <div class="ig"><label>سعر الكيلو</label>
+            <div class="iw"><input type="number" id="steelPriceKg" value="38.7" min="0" step="0.01" oninput="syncSteel('kg')"><span class="u">ج/كجم</span></div>
+          </div>
+        </div>
+        <div class="sync-note">↔ الطن = ١٠٠٠ كيلو</div>
+      </div>
+      <div class="price-block">
+        <div class="pb-title">🏛️ الأسمنت</div>
+        <div class="twin">
+          <div class="ig"><label>سعر الشكارة</label>
+            <div class="iw"><input type="number" id="cementPriceBag" value="220" min="0" oninput="syncCement('bag')"><span class="u">ج/شكارة</span></div>
+          </div>
+          <div class="ig"><label>سعر الطن</label>
+            <div class="iw"><input type="number" id="cementPriceTon" value="4400" min="0" oninput="syncCement('ton')"><span class="u">ج/طن</span></div>
+          </div>
+        </div>
+        <div class="sync-note">↔ الطن = ٢٠ شكارة</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec-title">📦 الكمية المتاحة</p>
+  <div class="cards-grid">
+    <div class="mat-card card-steel">
+      <div class="card-icon">🔩</div>
+      <div class="card-lbl">كمية الحديد</div>
+      <div class="dual-inp">
+        <div class="ig"><label>بالطن</label>
+          <div class="iw"><input type="number" id="steelQtyTon" value="30" min="0" step="0.5" oninput="syncSteelQty('ton')"><span class="u">طن</span></div>
+        </div>
+        <div class="ig"><label>بالكيلو</label>
+          <div class="iw"><input type="number" id="steelQtyKg" value="30000" min="0" step="100" oninput="syncSteelQty('kg')"><span class="u">كجم</span></div>
+        </div>
+      </div>
+      <div class="val-badge" id="steelStockVal">≈ <strong>1,161,000</strong> جنيه</div>
+    </div>
+    <div class="mat-card card-cement">
+      <div class="card-icon">🏛️</div>
+      <div class="card-lbl">كمية الأسمنت</div>
+      <div class="dual-inp">
+        <div class="ig"><label>بالطن</label>
+          <div class="iw"><input type="number" id="cementQtyTon" value="50" min="0" step="0.5" oninput="syncCementQty('ton')"><span class="u">طن</span></div>
+        </div>
+        <div class="ig"><label>بالشكاير</label>
+          <div class="iw"><input type="number" id="cementQtyBag" value="1000" min="0" step="1" oninput="syncCementQty('bag')"><span class="u">شكارة</span></div>
+        </div>
+      </div>
+      <div class="val-badge" id="cementStockVal">≈ <strong>220,000</strong> جنيه</div>
+    </div>
+  </div>
+
+  <div class="usage-box">
+    <p class="sec-title">🔧 الكميات المستخدمة / المصروفة</p>
+    <div class="usage-grid">
+      <div class="usage-col">
+        <div class="col-title">🔩 حديد تم صرفه</div>
+        <div class="ig"><label>بالطن</label>
+          <div class="iw"><input type="number" id="steelUsedTon" value="0" min="0" step="0.5" oninput="syncSteelUsed('ton')"><span class="u">طن</span></div>
+        </div>
+        <div class="ig"><label>بالكيلو</label>
+          <div class="iw"><input type="number" id="steelUsedKg" value="0" min="0" step="100" oninput="syncSteelUsed('kg')"><span class="u">كجم</span></div>
+        </div>
+      </div>
+      <div class="usage-col">
+        <div class="col-title">🏛️ أسمنت تم صرفه</div>
+        <div class="ig"><label>بالطن</label>
+          <div class="iw"><input type="number" id="cementUsedTon" value="0" min="0" step="0.5" oninput="syncCementUsed('ton')"><span class="u">طن</span></div>
+        </div>
+        <div class="ig"><label>بالشكاير</label>
+          <div class="iw"><input type="number" id="cementUsedBagInp" value="0" min="0" step="1" oninput="syncCementUsed('bag')"><span class="u">شكارة</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">⚡ احسب المتبقي والتكلفة</button>
+
+  <div class="results" id="results">
+    <div class="warn-box" id="warnBox">⚠️ <span id="warnText"></span></div>
+    <p class="sec-title">📊 المتبقي في المخزن</p>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="r-lbl">🔩 حديد متبقي</div>
+        <div class="r-val color-blue" id="rSteelTon">—</div>
+        <div class="r-sub" id="rSteelKg"></div>
+        <div class="r-sub" id="rSteelFrom"></div>
+      </div>
+      <div class="res-card">
+        <div class="r-lbl">🏛️ أسمنت متبقي</div>
+        <div class="r-val color-cement" id="rCementTon">—</div>
+        <div class="r-sub" id="rCementBags"></div>
+        <div class="r-sub" id="rCementFrom"></div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="prog-lbl"><span>نسبة الحديد المتبقي</span><span id="pSteelPct" style="color:#60a5fa">0%</span></div>
+      <div class="prog-bg"><div class="prog-fill fill-steel" id="pSteelBar" style="width:0%"></div></div>
+      <div class="prog-lbl"><span>نسبة الأسمنت المتبقي</span><span id="pCementPct" style="color:var(--cement-light)">0%</span></div>
+      <div class="prog-bg"><div class="prog-fill fill-cement" id="pCementBar" style="width:0%"></div></div>
+    </div>
+    <p class="sec-title">💰 قيمة المتبقي</p>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="r-lbl">قيمة الحديد المتبقي</div>
+        <div class="r-val color-blue" id="rSteelRemainVal">—</div>
+        <div class="r-sub" id="rSteelPriceNote"></div>
+      </div>
+      <div class="res-card">
+        <div class="r-lbl">قيمة الأسمنت المتبقي</div>
+        <div class="r-val color-cement" id="rCementRemainVal">—</div>
+        <div class="r-sub" id="rCementPriceNote"></div>
+      </div>
+    </div>
+    <p class="sec-title">🏆 الإجمالي</p>
+    <div class="summary-box">
+      <div class="s-lbl">إجمالي قيمة ما تبقى في المخزن</div>
+      <div class="s-total" id="rTotalRemain">—</div>
+      <div class="s-sub" id="rTotalSub"></div>
+    </div>
+    <p class="sec-title">📉 تكلفة ما تم صرفه</p>
+    <div class="res-grid">
+      <div class="res-card">
+        <div class="r-lbl">تكلفة الحديد المصروف</div>
+        <div class="r-val color-red" id="rSteelUsedVal">—</div>
+        <div class="r-sub" id="rSteelUsedNote"></div>
+      </div>
+      <div class="res-card">
+        <div class="r-lbl">تكلفة الأسمنت المصروف</div>
+        <div class="r-val color-red" id="rCementUsedVal">—</div>
+        <div class="r-sub" id="rCementUsedNote"></div>
+      </div>
+      <div class="res-card" style="grid-column:1/-1">
+        <div class="r-lbl">إجمالي المصروف</div>
+        <div class="r-val color-orange" id="rTotalUsed">—</div>
+        <div class="r-sub">جنيه إجمالي</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function r2(n){return Math.round(n*1000)/1000;}
+function fmt(n){return Math.round(n).toLocaleString('ar-EG');}
+function fmtD(n){return parseFloat(n.toFixed(3)).toLocaleString('ar-EG');}
+function syncSteel(f){if(f==='ton'){const t=parseFloat(document.getElementById('steelPriceTon').value)||0;document.getElementById('steelPriceKg').value=r2(t/1000);}else{const k=parseFloat(document.getElementById('steelPriceKg').value)||0;document.getElementById('steelPriceTon').value=r2(k*1000);}updateBadges();}
+function syncCement(f){if(f==='bag'){const b=parseFloat(document.getElementById('cementPriceBag').value)||0;document.getElementById('cementPriceTon').value=r2(b*20);}else{const t=parseFloat(document.getElementById('cementPriceTon').value)||0;document.getElementById('cementPriceBag').value=r2(t/20);}updateBadges();}
+function syncSteelQty(f){if(f==='ton'){const t=parseFloat(document.getElementById('steelQtyTon').value)||0;document.getElementById('steelQtyKg').value=r2(t*1000);}else{const k=parseFloat(document.getElementById('steelQtyKg').value)||0;document.getElementById('steelQtyTon').value=r2(k/1000);}updateBadges();}
+function syncCementQty(f){if(f==='ton'){const t=parseFloat(document.getElementById('cementQtyTon').value)||0;document.getElementById('cementQtyBag').value=Math.round(t*20);}else{const b=parseFloat(document.getElementById('cementQtyBag').value)||0;document.getElementById('cementQtyTon').value=r2(b/20);}updateBadges();}
+function syncSteelUsed(f){if(f==='ton'){const t=parseFloat(document.getElementById('steelUsedTon').value)||0;document.getElementById('steelUsedKg').value=r2(t*1000);}else{const k=parseFloat(document.getElementById('steelUsedKg').value)||0;document.getElementById('steelUsedTon').value=r2(k/1000);}}
+function syncCementUsed(f){if(f==='ton'){const t=parseFloat(document.getElementById('cementUsedTon').value)||0;document.getElementById('cementUsedBagInp').value=Math.round(t*20);}else{const b=parseFloat(document.getElementById('cementUsedBagInp').value)||0;document.getElementById('cementUsedTon').value=r2(b/20);}}
+function updateBadges(){
+  const sp=parseFloat(document.getElementById('steelPriceTon').value)||0;
+  const cp=parseFloat(document.getElementById('cementPriceBag').value)||0;
+  const sq=parseFloat(document.getElementById('steelQtyTon').value)||0;
+  const cq=parseFloat(document.getElementById('cementQtyTon').value)||0;
+  document.getElementById('steelStockVal').innerHTML=`≈ <strong>${fmt(sq*sp)}</strong> جنيه`;
+  document.getElementById('cementStockVal').innerHTML=`≈ <strong>${fmt(cq*20*cp)}</strong> جنيه`;
+}
+function calculate(){
+  const sp=parseFloat(document.getElementById('steelPriceTon').value)||0;
+  const bp=parseFloat(document.getElementById('cementPriceBag').value)||0;
+  const cp=bp*20;
+  const sq=parseFloat(document.getElementById('steelQtyTon').value)||0;
+  const cq=parseFloat(document.getElementById('cementQtyTon').value)||0;
+  const su=parseFloat(document.getElementById('steelUsedTon').value)||0;
+  const cu=parseFloat(document.getElementById('cementUsedTon').value)||0;
+  const sr=sq-su, cr=cq-cu;
+  const srv=Math.max(0,sr)*sp, crv=Math.max(0,cr)*cp;
+  const suv=su*sp, cuv=cu*cp;
+  const warns=[];
+  if(su>sq) warns.push(`الحديد المصروف (${su} طن) أكبر من المخزون!`);
+  if(cu>cq) warns.push(`الأسمنت المصروف (${cu} طن) أكبر من المخزون!`);
+  const wb=document.getElementById('warnBox');
+  if(warns.length){wb.classList.add('show');document.getElementById('warnText').textContent=warns.join(' | ');}else wb.classList.remove('show');
+  const srf=Math.max(0,sr), crf=Math.max(0,cr);
+  document.getElementById('rSteelTon').textContent=`${fmtD(srf)} طن`;
+  document.getElementById('rSteelKg').textContent=`= ${fmt(srf*1000)} كيلوجرام`;
+  document.getElementById('rSteelFrom').textContent=`من أصل ${sq} طن`;
+  document.getElementById('rCementTon').textContent=`${fmtD(crf)} طن`;
+  document.getElementById('rCementBags').textContent=`= ${fmt(crf*20)} شكارة`;
+  document.getElementById('rCementFrom').textContent=`من أصل ${cq} طن`;
+  const spp=sq>0?Math.min(100,Math.max(0,sr/sq*100)):0;
+  const cpp=cq>0?Math.min(100,Math.max(0,cr/cq*100)):0;
+  document.getElementById('pSteelPct').textContent=`${Math.round(spp)}%`;
+  document.getElementById('pCementPct').textContent=`${Math.round(cpp)}%`;
+  document.getElementById('pSteelBar').style.width=spp+'%';
+  document.getElementById('pCementBar').style.width=cpp+'%';
+  document.getElementById('rSteelRemainVal').textContent=`${fmt(srv)} ج`;
+  document.getElementById('rSteelPriceNote').textContent=`${fmtD(srf)} طن × ${fmt(sp)} ج/طن`;
+  document.getElementById('rCementRemainVal').textContent=`${fmt(crv)} ج`;
+  document.getElementById('rCementPriceNote').textContent=`${fmt(crf*20)} شكارة × ${fmt(bp)} ج/شكارة`;
+  document.getElementById('rTotalRemain').textContent=`${fmt(srv+crv)} جنيه`;
+  document.getElementById('rTotalSub').textContent=`حديد: ${fmt(srv)} + أسمنت: ${fmt(crv)}`;
+  document.getElementById('rSteelUsedVal').textContent=`${fmt(suv)} ج`;
+  document.getElementById('rSteelUsedNote').textContent=`${su} طن × ${fmt(sp)} ج/طن`;
+  document.getElementById('rCementUsedVal').textContent=`${fmt(cuv)} ج`;
+  document.getElementById('rCementUsedNote').textContent=`${fmt(cu*20)} شكارة × ${fmt(bp)} ج/شكارة`;
+  document.getElementById('rTotalUsed').textContent=`${fmt(suv+cuv)} ج`;
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+updateBadges();
+</script>
+</body>
+</html>
