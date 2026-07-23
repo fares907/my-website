@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/warehouse.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -20,10 +21,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 header{text-align:center;padding:10px 0 16px;}
 header h1{font-size:1.75rem;font-weight:900;background:linear-gradient(135deg,var(--cement-light),var(--cement));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px;}
 header p{color:var(--muted);font-size:.85rem;}
-.sync-status{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;padding:3px 10px;border-radius:99px;margin-top:6px;}
-.sync-ok{background:#0e2e1a;border:1px solid #2d6a3d;color:#4ade80;}
-.sync-err{background:#3a1a1a;border:1px solid #6a2d2d;color:#fca5a5;}
-.sync-loading{background:#1a2a3a;border:1px solid #2a4a6a;color:#60a5fa;}
 .price-bar{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
 .bar-title{font-size:.74rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
 .price-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -64,17 +61,19 @@ header p{color:var(--muted);font-size:.85rem;}
 .form-group{display:flex;flex-direction:column;gap:4px;min-width:0;}
 .form-group label{font-size:.72rem;color:var(--muted);font-weight:600;}
 .form-group select{background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.88rem;font-weight:700;padding:8px 10px;outline:none;width:100%;}
+.form-group select:focus{border-color:var(--cement);}
 .note-inp{background:var(--card2);border:1px solid #2a3a5c;border-radius:8px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;padding:8px 10px;outline:none;width:100%;}
+.note-inp:focus{border-color:var(--cement);}
 .qty-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .action-btn{padding:10px 16px;border:none;border-radius:8px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;transition:all .18s;white-space:nowrap;width:100%;}
 .btn-out{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;}
 .btn-in{background:linear-gradient(135deg,#1a8a3a,#27ae60);color:#fff;}
 .action-btn:hover{transform:translateY(-1px);opacity:.9;}
-.action-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .log-wrap{background:var(--card);border:1px solid #2a3a5c;border-radius:13px;padding:16px 18px;margin-bottom:18px;}
 .log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .log-title{font-size:.74rem;font-weight:700;color:var(--cement);text-transform:uppercase;letter-spacing:1px;}
 .clear-btn{font-size:.72rem;color:var(--red);background:transparent;border:1px solid #5a2a2a;border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Cairo',sans-serif;}
+.clear-btn:hover{background:#2a1a1a;}
 .log-empty{text-align:center;color:var(--muted);font-size:.82rem;padding:20px 0;}
 .log-table{width:100%;border-collapse:collapse;}
 .log-table th{font-size:.66rem;color:var(--muted);font-weight:700;text-align:right;padding:6px 8px;border-bottom:1px solid #2a3a5c;}
@@ -86,10 +85,13 @@ header p{color:var(--muted);font-size:.85rem;}
 .badge-in{background:#0e2e1a;color:var(--green);}
 .badge-steel{background:#0e1e3a;color:var(--blue);}
 .badge-cement{background:#2a1e08;color:var(--cement-light);}
+.undo-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;padding:2px 6px;border-radius:4px;}
+.undo-btn:hover{color:var(--red);background:#2a1a1a;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#1e3a2a;border:1px solid #2d6a3d;border-radius:10px;padding:10px 20px;font-size:.85rem;color:#86efac;font-weight:700;transition:transform .3s ease,opacity .3s;opacity:0;z-index:999;}
 .toast.err{background:#3a1a1a;border-color:#6a2d2d;color:#fca5a5;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .color-blue{color:#60a5fa;}.color-cement{color:var(--cement-light);}
+.save-badge{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;color:#4ade80;background:#0e2e1a;border:1px solid #2d6a3d;border-radius:6px;padding:3px 8px;margin-right:8px;}
 </style>
 </head>
 <body>
@@ -97,8 +99,7 @@ header p{color:var(--muted);font-size:.85rem;}
   <a href="index.html" class="back-btn">← الرئيسية</a>
   <header>
     <h1>📦 مخزن مواد البناء</h1>
-    <p>صرف — استلام — مربوط بكل الأجهزة</p>
-    <div id="syncStatus" class="sync-status sync-loading">⏳ جاري الاتصال...</div>
+    <p>صرف — استلام — سجل حركات كامل · <span class="save-badge">💾 محفوظ تلقائي</span></p>
   </header>
 
   <div class="price-bar">
@@ -135,17 +136,17 @@ header p{color:var(--muted);font-size:.85rem;}
     <div class="dash-card dc-steel">
       <div class="dc-icon">🔩</div>
       <div class="dc-name">حديد متبقي</div>
-      <div class="dc-main color-blue" id="dSteelTon">...</div>
-      <div class="dc-sub" id="dSteelKg">جاري التحميل</div>
-      <div class="dc-val" id="dSteelVal">≈ <strong>...</strong> جنيه</div>
+      <div class="dc-main color-blue" id="dSteelTon">0 طن</div>
+      <div class="dc-sub" id="dSteelKg">0 كيلوجرام</div>
+      <div class="dc-val" id="dSteelVal">≈ <strong>0</strong> جنيه</div>
       <div class="prog-bg"><div class="prog-fill fill-s" id="dSteelBar" style="width:0%"></div></div>
     </div>
     <div class="dash-card dc-cement">
       <div class="dc-icon">🏛️</div>
       <div class="dc-name">أسمنت متبقي</div>
-      <div class="dc-main color-cement" id="dCementTon">...</div>
-      <div class="dc-sub" id="dCementBags">جاري التحميل</div>
-      <div class="dc-val" id="dCementVal">≈ <strong>...</strong> جنيه</div>
+      <div class="dc-main color-cement" id="dCementTon">0 طن</div>
+      <div class="dc-sub" id="dCementBags">0 شكارة</div>
+      <div class="dc-val" id="dCementVal">≈ <strong>0</strong> جنيه</div>
       <div class="prog-bg"><div class="prog-fill fill-c" id="dCementBar" style="width:0%"></div></div>
     </div>
   </div>
@@ -186,131 +187,53 @@ header p{color:var(--muted);font-size:.85rem;}
       <div class="log-title">📋 سجل الحركات</div>
       <button class="clear-btn" onclick="clearLog()">🗑️ مسح الكل</button>
     </div>
-    <div id="logBody"><div class="log-empty">⏳ جاري تحميل السجل...</div></div>
+    <div id="logBody"><div class="log-empty">لا توجد حركات بعد</div></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== SUPABASE CONFIG =====
-const SUPA_URL = 'https://zssgzdmlywlyrgaomwbw.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpzc2d6ZG1seXdseXJnYW9td2J3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3OTQzMDEsImV4cCI6MjEwMDM3MDMwMX0.JiDdasC-CkpM5HLhzUYbtT_Zq3Kf0L-pDO4EaRARLiI';
-
-async function supaGet(table, filter='') {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`, {
-    headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
-  });
-  return r.json();
+// ===== STATE — محمّل من localStorage =====
+function loadState() {
+  try {
+    const s = localStorage.getItem('binaa_state');
+    return s ? JSON.parse(s) : { steelTon:0, cementTon:0, steelPeak:0, cementPeak:0, log:[], steelPrice:38700, cementBagPrice:220 };
+  } catch(e) { return { steelTon:0, cementTon:0, steelPeak:0, cementPeak:0, log:[], steelPrice:38700, cementBagPrice:220 }; }
 }
-async function supaUpsert(table, data) {
-  await fetch(`${SUPA_URL}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'
-    },
-    body: JSON.stringify(data)
-  });
-}
-async function supaInsert(table, data) {
-  await fetch(`${SUPA_URL}/rest/v1/${table}`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
-}
-async function supaDelete(table, filter) {
-  await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`, {
-    method: 'DELETE',
-    headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
-  });
+function saveState() {
+  const s = { steelTon, cementTon, steelPeak, cementPeak, log,
+    steelPrice: parseFloat(document.getElementById('steelPriceTon').value)||38700,
+    cementBagPrice: parseFloat(document.getElementById('cementPriceBag').value)||220
+  };
+  localStorage.setItem('binaa_state', JSON.stringify(s));
 }
 
-// ===== STATE =====
-let steelTon=0, cementTon=0, steelPeak=0, cementPeak=0;
-let logData=[];
-let currentTab='out';
-let connected=false;
+let { steelTon, cementTon, steelPeak, cementPeak, log, steelPrice, cementBagPrice } = loadState();
+let currentTab = 'out';
 
 function r2(n){return Math.round(n*1000)/1000;}
 function fmt(n){return Math.round(n).toLocaleString('ar-EG');}
 function fmtD(n){return parseFloat(n.toFixed(3)).toLocaleString('ar-EG');}
-function nowStr(){return new Date().toLocaleString('ar-EG',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});}
+function now(){return new Date().toLocaleString('ar-EG',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'});}
 
-// ===== LOAD FROM SUPABASE =====
-async function loadAll() {
-  try {
-    setSyncStatus('loading');
-    const res = await fetch(`${SUPA_URL}/rest/v1/stock`, {
-      headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
-    });
-    if(!res.ok) {
-      const err = await res.text();
-      showToast('خطأ: ' + res.status + ' — ' + err.slice(0,80), 'err');
-      setSyncStatus('err');
-      return;
-    }
-    const stock = await res.json();
-    stock.forEach(row => {
-      if(row.id==='steelTon')       steelTon      = parseFloat(row.value)||0;
-      if(row.id==='cementTon')      cementTon     = parseFloat(row.value)||0;
-      if(row.id==='steelPeak')      steelPeak     = parseFloat(row.value)||0;
-      if(row.id==='cementPeak')     cementPeak    = parseFloat(row.value)||0;
-      if(row.id==='steelPrice')     { document.getElementById('steelPriceTon').value=row.value; document.getElementById('steelPriceKg').value=r2(row.value/1000); }
-      if(row.id==='cementBagPrice') { document.getElementById('cementPriceBag').value=row.value; document.getElementById('cementPriceTon').value=r2(row.value*20); }
-    });
-    // load logs
-    const logs = await supaGet('logs', 'order=id.desc');
-    logData = logs;
-    connected = true;
-    setSyncStatus('ok');
-    renderDash();
-    renderLog();
-  } catch(e) {
-    setSyncStatus('err');
-    showToast('مش قادر يتصل بالسيرفر!', 'err');
-  }
-}
-
-// ===== SAVE STOCK =====
-async function saveStock() {
-  const sp = parseFloat(document.getElementById('steelPriceTon').value)||38700;
-  const bp = parseFloat(document.getElementById('cementPriceBag').value)||220;
-  await supaUpsert('stock', [
-    {id:'steelTon',      value: steelTon},
-    {id:'cementTon',     value: cementTon},
-    {id:'steelPeak',     value: steelPeak},
-    {id:'cementPeak',    value: cementPeak},
-    {id:'steelPrice',    value: sp},
-    {id:'cementBagPrice',value: bp},
-  ]);
-}
-
-// ===== SYNC STATUS =====
-function setSyncStatus(s) {
-  const el = document.getElementById('syncStatus');
-  if(s==='ok')      { el.className='sync-status sync-ok';      el.textContent='🟢 متصل — بيانات مشتركة على كل الأجهزة'; }
-  if(s==='err')     { el.className='sync-status sync-err';     el.textContent='🔴 غير متصل'; }
-  if(s==='loading') { el.className='sync-status sync-loading'; el.textContent='⏳ جاري الاتصال...'; }
-}
-
-// ===== PRICE SYNC =====
+// ===== PRICES =====
 function syncSteel(f){
   if(f==='ton'){const t=parseFloat(document.getElementById('steelPriceTon').value)||0;document.getElementById('steelPriceKg').value=r2(t/1000);}
   else{const k=parseFloat(document.getElementById('steelPriceKg').value)||0;document.getElementById('steelPriceTon').value=r2(k*1000);}
-  renderDash();
+  saveState(); renderDash();
 }
 function syncCement(f){
   if(f==='bag'){const b=parseFloat(document.getElementById('cementPriceBag').value)||0;document.getElementById('cementPriceTon').value=r2(b*20);}
   else{const t=parseFloat(document.getElementById('cementPriceTon').value)||0;document.getElementById('cementPriceBag').value=r2(t/20);}
-  renderDash();
+  saveState(); renderDash();
 }
+
+// ===== QTY SYNC =====
 function syncQtyTon(){const mat=document.getElementById('matSelect').value;const t=parseFloat(document.getElementById('qtyTon').value)||0;document.getElementById('qtySub').value=mat==='steel'?r2(t*1000):Math.round(t*20);}
 function syncQtySub(){const mat=document.getElementById('matSelect').value;const s=parseFloat(document.getElementById('qtySub').value)||0;document.getElementById('qtyTon').value=mat==='steel'?r2(s/1000):r2(s/20);}
 function onMatChange(){const mat=document.getElementById('matSelect').value;document.getElementById('subUnit').textContent=mat==='steel'?'كجم':'شكارة';document.getElementById('qtySub').value='';document.getElementById('qtyTon').value='';}
+
+// ===== TABS =====
 function setTab(t){
   currentTab=t;
   document.getElementById('tabOut').className='tab-btn'+(t==='out'?' active-out':'');
@@ -320,8 +243,7 @@ function setTab(t){
 }
 
 // ===== ACTION =====
-async function doAction(){
-  if(!connected){showToast('مش متصل بالسيرفر!','err');return;}
+function doAction(){
   const mat=document.getElementById('matSelect').value;
   const qtyT=parseFloat(document.getElementById('qtyTon').value)||0;
   const note=document.getElementById('noteInp').value.trim();
@@ -329,52 +251,53 @@ async function doAction(){
   const sp=parseFloat(document.getElementById('steelPriceTon').value)||0;
   const bp=parseFloat(document.getElementById('cementPriceBag').value)||0;
   const cp=bp*20;
-  const btn=document.getElementById('actionBtn');
-  btn.disabled=true;
 
   if(currentTab==='out'){
-    if(mat==='steel'){if(qtyT>steelTon){showToast(`المخزون فيه ${fmtD(steelTon)} طن بس!`,'err');btn.disabled=false;return;}steelTon=r2(steelTon-qtyT);}
-    else{if(qtyT>cementTon){showToast(`المخزون فيه ${fmtD(cementTon)} طن بس!`,'err');btn.disabled=false;return;}cementTon=r2(cementTon-qtyT);}
-    const val=qtyT*(mat==='steel'?sp:cp);
-    await supaInsert('logs',{id:Date.now(),type:'out',mat,qty_ton:qtyT,val,note,time:nowStr()});
+    if(mat==='steel'){if(qtyT>steelTon){showToast(`المخزون فيه ${fmtD(steelTon)} طن بس!`,'err');return;}steelTon=r2(steelTon-qtyT);}
+    else{if(qtyT>cementTon){showToast(`المخزون فيه ${fmtD(cementTon)} طن بس!`,'err');return;}cementTon=r2(cementTon-qtyT);}
+    log.unshift({id:Date.now(),type:'out',mat,qtyTon:qtyT,val:qtyT*(mat==='steel'?sp:cp),note,time:now()});
     showToast(`تم الصرف ✓ — ${fmtD(qtyT)} طن ${mat==='steel'?'حديد':'أسمنت'}`);
   } else {
     if(mat==='steel'){steelTon=r2(steelTon+qtyT);if(steelTon>steelPeak)steelPeak=steelTon;}
     else{cementTon=r2(cementTon+qtyT);if(cementTon>cementPeak)cementPeak=cementTon;}
-    const val=qtyT*(mat==='steel'?sp:cp);
-    await supaInsert('logs',{id:Date.now(),type:'in',mat,qty_ton:qtyT,val,note,time:nowStr()});
+    log.unshift({id:Date.now(),type:'in',mat,qtyTon:qtyT,val:qtyT*(mat==='steel'?sp:cp),note,time:now()});
     showToast(`تم الاستلام ✓ — ${fmtD(qtyT)} طن ${mat==='steel'?'حديد':'أسمنت'}`);
   }
-  await saveStock();
   document.getElementById('qtyTon').value='';
   document.getElementById('qtySub').value='';
   document.getElementById('noteInp').value='';
-  btn.disabled=false;
-  await loadAll();
+  saveState(); renderDash(); renderLog();
 }
 
-// ===== CLEAR LOG =====
-async function clearLog(){
-  if(!logData.length)return;
+// ===== UNDO =====
+function undoLog(id){
+  const idx=log.findIndex(x=>x.id===id);if(idx<0)return;
+  const e=log[idx];
+  if(e.type==='out'){if(e.mat==='steel')steelTon=r2(steelTon+e.qtyTon);else cementTon=r2(cementTon+e.qtyTon);}
+  else{if(e.mat==='steel'){steelTon=r2(steelTon-e.qtyTon);if(steelTon<0)steelTon=0;}else{cementTon=r2(cementTon-e.qtyTon);if(cementTon<0)cementTon=0;}}
+  log.splice(idx,1);
+  showToast('تم التراجع ✓');
+  saveState(); renderDash(); renderLog();
+}
+
+function clearLog(){
+  if(!log.length)return;
   if(!confirm('هتمسح سجل الحركات؟ الرصيد هيفضل زي ما هو.'))return;
-  await supaDelete('logs','id=gte.0');
-  logData=[];
-  renderLog();
-  showToast('تم مسح السجل ✓');
+  log=[];saveState();renderLog();
 }
 
 // ===== RENDER =====
 function renderLog(){
   const el=document.getElementById('logBody');
-  if(!logData.length){el.innerHTML='<div class="log-empty">لا توجد حركات بعد</div>';return;}
-  const rows=logData.map(e=>{
+  if(!log.length){el.innerHTML='<div class="log-empty">لا توجد حركات بعد — ابدأ بصرف أو استلام</div>';return;}
+  const rows=log.map(e=>{
     const tb=e.type==='out'?'<span class="badge badge-out">📤 صرف</span>':'<span class="badge badge-in">📥 استلام</span>';
     const mb=e.mat==='steel'?'<span class="badge badge-steel">🔩 حديد</span>':'<span class="badge badge-cement">🏛️ أسمنت</span>';
-    const sub=e.mat==='steel'?`${fmt(e.qty_ton*1000)} كجم`:`${fmt(e.qty_ton*20)} شكارة`;
+    const sub=e.mat==='steel'?`${fmt(e.qtyTon*1000)} كجم`:`${fmt(e.qtyTon*20)} شكارة`;
     const nc=e.note?`<span style="color:var(--muted);font-size:.7rem">${e.note}</span>`:'—';
-    return `<tr><td>${tb}</td><td>${mb}</td><td style="font-weight:700">${fmtD(e.qty_ton)} طن<br><span style="font-size:.66rem;color:var(--muted)">${sub}</span></td><td style="color:var(--cement-light);font-weight:700">${fmt(e.val)} ج</td><td>${nc}</td><td style="color:var(--muted);font-size:.68rem">${e.time}</td></tr>`;
+    return `<tr><td>${tb}</td><td>${mb}</td><td style="font-weight:700">${fmtD(e.qtyTon)} طن<br><span style="font-size:.66rem;color:var(--muted)">${sub}</span></td><td style="color:var(--cement-light);font-weight:700">${fmt(e.val)} ج</td><td>${nc}</td><td style="color:var(--muted);font-size:.68rem">${e.time}</td><td><button class="undo-btn" onclick="undoLog(${e.id})" title="تراجع">↩</button></td></tr>`;
   }).join('');
-  el.innerHTML=`<table class="log-table"><thead><tr><th>النوع</th><th>المادة</th><th>الكمية</th><th>القيمة</th><th>ملاحظة</th><th>الوقت</th></tr></thead><tbody>${rows}</tbody></table>`;
+  el.innerHTML=`<table class="log-table"><thead><tr><th>النوع</th><th>المادة</th><th>الكمية</th><th>القيمة</th><th>ملاحظة</th><th>الوقت</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function renderDash(){
@@ -399,9 +322,15 @@ function showToast(msg,type='ok'){
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// تحديث تلقائي كل 30 ثانية
-setInterval(loadAll, 30000);
-loadAll();
+// ===== INIT — حمّل الأسعار المحفوظة =====
+document.getElementById('steelPriceTon').value = steelPrice;
+document.getElementById('steelPriceKg').value  = r2(steelPrice/1000);
+document.getElementById('cementPriceBag').value = cementBagPrice;
+document.getElementById('cementPriceTon').value = r2(cementBagPrice*20);
+renderDash();
+renderLog();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "warehouse done"
